@@ -150,7 +150,8 @@ namespace UpperComputer
         void port_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
             int nRead = serialPort.BytesToRead;
-            if (nRead > 0)
+            int bytesToRead = Math.Min(nRead, receiveBuffer.Length);
+            if (bytesToRead > 0)
             {
                 // 在UI线程上更新计数器和文本框内容
                 Dispatcher.BeginInvoke(new Action(() =>
@@ -160,7 +161,7 @@ namespace UpperComputer
                     receive_count.Content = receiveCount + 1;
                     try
                     {
-                        bytesRead = serialPort.Read(receiveBuffer, 0, nRead);
+                        bytesRead = serialPort.Read(receiveBuffer, 0, bytesToRead);
                         if (data_forward.IsChecked==true && serialPortVirtual!=null && serialPortVirtual.IsOpen)
                         {
                             serialPortVirtual.Write(receiveBuffer, 0, bytesRead);
