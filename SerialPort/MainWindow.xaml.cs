@@ -229,7 +229,7 @@ namespace UpperComputer
         public byte CalcChecksum(byte[] data, int length)
         {
             byte checksum = 0;
-            for (byte i = 0; i < length; i++)
+            for (int i = 0; i < length; i++)
             {
                 checksum ^= data[i];
             }
@@ -238,15 +238,34 @@ namespace UpperComputer
         /// 发送自定义帧
         public async Task SendFrameAsync(byte func_code, byte[] data, int data_len)
         {
+            if (data == null)
+            {
+                MessageBox.Show("数据为空，无法发送。");
+                return;
+            }
+
+            const int frameOverhead = 5;
+            int maxDataLength = byte.MaxValue - frameOverhead;
+            if (data_len < 0 || data_len > data.Length)
+            {
+                MessageBox.Show("数据长度无效，无法发送。");
+                return;
+            }
+            if (data_len > maxDataLength)
+            {
+                MessageBox.Show($"数据长度超出限制（最大 {maxDataLength} 字节），无法发送。");
+                return;
+            }
+
             // 计算帧长和校验和
-            byte frame_len = (byte)(1 + 1 + 1 + data_len + 1 + 1); // 帧头 + 帧长 + 功能码 + 数据 + 校验和 + 帧尾
+            int frame_len = 1 + 1 + 1 + data_len + 1 + 1; // 帧头 + 帧长 + 功能码 + 数据 + 校验和 + 帧尾
             byte checksum = CalcChecksum(data, data_len);
             // 定义帧缓冲区
             byte[] frame = new byte[frame_len];
             // 组装帧
-            byte index = 0;
+            int index = 0;
             frame[index++] = FRAME_HEADER; // 帧头
-            frame[index++] = frame_len;    // 帧长
+            frame[index++] = (byte)frame_len;    // 帧长
             frame[index++] = func_code;    // 功能码
             for (int i = 0; i < data_len; i++)
             { // 数据
