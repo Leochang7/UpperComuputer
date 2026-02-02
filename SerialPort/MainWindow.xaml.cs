@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Globalization;
 
 namespace UpperComputer
 {
@@ -337,10 +338,14 @@ namespace UpperComputer
                 MessageBox.Show("值未输入完全");
                 return;
             }
-            byte wheelValue = byte.Parse(textBox_wheel.Text);
-            float pValue = float.Parse(textBox_speed_P.Text);
-            float iValue = float.Parse(textBox_speed_I.Text);
-            float dValue = float.Parse(textBox_speed_D.Text);
+            if (!byte.TryParse(textBox_wheel.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out byte wheelValue)
+                || !float.TryParse(textBox_speed_P.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out float pValue)
+                || !float.TryParse(textBox_speed_I.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out float iValue)
+                || !float.TryParse(textBox_speed_D.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out float dValue))
+            {
+                MessageBox.Show("输入的参数格式不正确，请重新输入。");
+                return;
+            }
 
             byte[] pBytes = BitConverter.GetBytes(pValue);
             byte[] iBytes = BitConverter.GetBytes(iValue);
@@ -372,9 +377,13 @@ namespace UpperComputer
                 return;
             }
 
-            float pValue = float.Parse(textBox_angle_P.Text);
-            float iValue = float.Parse(textBox_angle_I.Text);
-            float dValue = float.Parse(textBox_angle_D.Text);
+            if (!float.TryParse(textBox_angle_P.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out float pValue)
+                || !float.TryParse(textBox_angle_I.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out float iValue)
+                || !float.TryParse(textBox_angle_D.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out float dValue))
+            {
+                MessageBox.Show("输入的参数格式不正确，请重新输入。");
+                return;
+            }
 
             byte[] pBytes = BitConverter.GetBytes(pValue);
             byte[] iBytes = BitConverter.GetBytes(iValue);
@@ -406,9 +415,13 @@ namespace UpperComputer
                 return;
             }
 
-            float pValue = float.Parse(textBox_disatance_P.Text);
-            float iValue = float.Parse(textBox_disatance_I.Text);
-            float dValue = float.Parse(textBox_disatance_D.Text);
+            if (!float.TryParse(textBox_disatance_P.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out float pValue)
+                || !float.TryParse(textBox_disatance_I.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out float iValue)
+                || !float.TryParse(textBox_disatance_D.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out float dValue))
+            {
+                MessageBox.Show("输入的参数格式不正确，请重新输入。");
+                return;
+            }
 
             byte[] pBytes = BitConverter.GetBytes(pValue);
             byte[] iBytes = BitConverter.GetBytes(iValue);
@@ -438,7 +451,11 @@ namespace UpperComputer
                 MessageBox.Show("请输入距离值");
                 return;
             }
-            float distance_f = float.Parse(textBox_distance.Text);
+            if (!float.TryParse(textBox_distance.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out float distance_f))
+            {
+                MessageBox.Show("输入的距离值格式不正确，请重新输入。");
+                return;
+            }
             byte[] dBytes = BitConverter.GetBytes(distance_f);
             if (serialPort != null && serialPort.IsOpen)
             {
@@ -457,7 +474,11 @@ namespace UpperComputer
                 MessageBox.Show("请输入角度值");
                 return;
             }
-            float angle_f = float.Parse(textBox_angle.Text);
+            if (!float.TryParse(textBox_angle.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out float angle_f))
+            {
+                MessageBox.Show("输入的角度值格式不正确，请重新输入。");
+                return;
+            }
             byte[] aBytes = BitConverter.GetBytes(angle_f);
             if (serialPort != null && serialPort.IsOpen)
             {
@@ -476,7 +497,11 @@ namespace UpperComputer
                 MessageBox.Show("请输入速度值");
                 return;
             }
-            float speed_f = float.Parse(textBox_speed.Text);
+            if (!float.TryParse(textBox_speed.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out float speed_f))
+            {
+                MessageBox.Show("输入的速度值格式不正确，请重新输入。");
+                return;
+            }
             byte[] sBytes = BitConverter.GetBytes(speed_f);
             if (serialPort != null && serialPort.IsOpen)
             {
