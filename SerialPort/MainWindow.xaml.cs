@@ -78,8 +78,23 @@ namespace UpperComputer
                 return;
             }
 
+            string newlineSuffix = string.Empty;
+            switch (combobox_newline.Text)
+            {
+                case "\\r\\n(CRLF)":
+                    newlineSuffix = "\r\n";
+                    break;
+                case "\\r(CR)":
+                    newlineSuffix = "\r";
+                    break;
+                case "\\n(LF)":
+                    newlineSuffix = "\n";
+                    break;
+            }
+
+            string dataToSend = data + newlineSuffix;
             string encodingName = comboBox_encoding.Text;
-            byte[] byteData = Encoding.GetEncoding(encodingName).GetBytes(data);
+            byte[] byteData = Encoding.GetEncoding(encodingName).GetBytes(dataToSend);
 
             // 发送数据到串口
             serialPort.Write(byteData, 0, byteData.Length);
