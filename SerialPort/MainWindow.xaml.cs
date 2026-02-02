@@ -149,7 +149,19 @@ namespace UpperComputer
 
         void port_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
-            int nRead = serialPort.BytesToRead;
+            var activePort = (System.IO.Ports.SerialPort)sender;
+            HandleDataReceived(activePort, allowForward: true);
+        }
+
+        void virtualPort_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
+        {
+            var activePort = (System.IO.Ports.SerialPort)sender;
+            HandleDataReceived(activePort, allowForward: false);
+        }
+
+        private void HandleDataReceived(System.IO.Ports.SerialPort activePort, bool allowForward)
+        {
+            int nRead = activePort.BytesToRead;
             if (nRead > 0)
             {
                 // 在UI线程上更新计数器和文本框内容
@@ -160,8 +172,8 @@ namespace UpperComputer
                     receive_count.Content = receiveCount + 1;
                     try
                     {
-                        bytesRead = serialPort.Read(receiveBuffer, 0, nRead);
-                        if (data_forward.IsChecked==true && serialPortVirtual!=null && serialPortVirtual.IsOpen)
+                        bytesRead = activePort.Read(receiveBuffer, 0, nRead);
+                        if (allowForward && data_forward.IsChecked == true && serialPortVirtual != null && serialPortVirtual.IsOpen)
                         {
                             serialPortVirtual.Write(receiveBuffer, 0, bytesRead);
                         }
@@ -481,7 +493,7 @@ namespace UpperComputer
                 ReceivedBytesThreshold = 1
             };
 
-            serialPortVirtual.DataReceived += port_DataReceived;
+            serialPortVirtual.DataReceived += virtualPort_DataReceived;
 
             try
             {
